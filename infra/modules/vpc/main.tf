@@ -31,6 +31,17 @@ resource "aws_internet_gateway" "igw" {
 
 
 # Route Table
+resource "aws_route_table" "rt" {
+    vpc_id = aws_vpc.my_vpc.id
+
+    route {
+        cidr_block = "0.0.0.0/0" # This is for the public subnet
+        gateway_id = aws_internet_gateway.igw.id
+    }
+    tags = {
+        Name = "myRouteTable"
+  }
+}
 
 # Route Table Association
 
