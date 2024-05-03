@@ -8,16 +8,26 @@ resource "aws_vpc" "my_vpc" {
   }
 }
 
-# 2 Subnets
-resource "aws_subnet" "subnets" {
-    count = length(var.subnet_cidr)
-    vpc_id     = aws_vpc.my_vpc.id
-    cidr_block = var.subnet_cidr[count.index]
-    availability_zone = data.aws_availability_zones.available.names[count.index]
-    map_public_ip_on_launch = true # This is for the public subnet
-    tags = {
-        Name = var.subnet_names[count.index]
-    }
+# Public Subnets
+resource "aws_subnet" "public_subnet" {
+  vpc_id     = aws_vpc.my_vpc.id
+  cidr_block = var.subnet_cidr[0]
+  availability_zone = data.aws_availability_zones.available.names[0]
+  map_public_ip_on_launch = true # for subnet to be assigned a public IP address
+  tags = {
+      Name = var.subnet_names[0]
+  }
+}
+
+# Private Subnets
+resource "aws_subnet" "private_subnet" {
+  vpc_id     = aws_vpc.my_vpc.id
+  cidr_block = var.subnet_cidr[1]
+  availability_zone = data.aws_availability_zones.available.names[0]
+  map_public_ip_on_launch = false # don't assign a public IP address to this subnet
+  tags = {
+    Name = var.subnet_names[1]
+  }
 }
 
 # Internet Gateway
