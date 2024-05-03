@@ -40,22 +40,35 @@ resource "aws_internet_gateway" "igw" {
 }
 
 
-# Route Table
-resource "aws_route_table" "rt" {
-    vpc_id = aws_vpc.my_vpc.id
-
-    route {
-        cidr_block = "0.0.0.0/0" # This is for the public subnet
-        gateway_id = aws_internet_gateway.igw.id
-    }
-    tags = {
-        Name = "myRouteTable"
+# Public Route Table
+resource "aws_route_table" "public_rt" {
+  vpc_id = aws_vpc.my_vpc.id
+  route {
+    cidr_block = "0.0.0.0/0" # This is for the public subnet
+    gateway_id = aws_internet_gateway.igw.id
+  }
+  tags = {
+    Name = "Public-RouteTable"
   }
 }
 
-# Route Table Association
+# Private Route Table - No internet access
+resource "aws_route_table" "private_rt" {
+  vpc_id = aws_vpc.my_vpc.id
+  # No route to the internet
+  tags = {
+    Name = "Private-RouteTable"
+  }
+}
+
+# Public Route Table Association
 resource "aws_route_table_association" "rta" {
-    count = length(var.subnet_cidr)
-    subnet_id      = aws_subnet.subnets[count.index].id
-    route_table_id = aws_route_table.rt.id
+  subnet_id      = aws_subnet.public_subnet.id
+  route_table_id = aws_route_table.public_rt.id
+}
+
+# Private Route Table Association
+resource "aws_route_table_association" "private_rta" {
+  subnet_id      = aws_subnet.private_subnet.id
+  route_table_id = aws_route_table.private_rt.id
 }
