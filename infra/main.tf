@@ -4,10 +4,10 @@ module "vpc" {
     subnet_cidr = var.subnet_cidr
 }
  
-# module "sg" {
-#     source = "./modules/sg"
-#     vpc_id = module.vpc.vpc_id
-# }
+module "sg" {
+    source = "./modules/sg"
+    vpc_id = module.vpc.vpc_id
+}
 
 # module "ec2" {
 #     source = "./modules/ec2"
