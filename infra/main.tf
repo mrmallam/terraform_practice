@@ -10,19 +10,15 @@ module "sg" {
 }
 
 module "ec2_frontend" {
-    source            = "./modules/ec2"
+    source            = "./modules/ec2/frontend_EC2"
     frontend_sg_id    = module.sg.frontend_sg_id
     public_subnet_id  = module.vpc.public_subnet_id
-    backend_sg_id     = ""  # Optional default value
-    private_subnet_id = ""  # Optional default value
 }
 
 module "ec2_backend" {
-    source            = "./modules/ec2"
+    source            = "./modules/ec2/backend_EC2"
     backend_sg_id     = module.sg.backend_sg_id
     private_subnet_id = module.vpc.private_subnet_id
-    frontend_sg_id    = ""  # Optional default value
-    public_subnet_id  = ""  # Optional default value
 }
 
 
